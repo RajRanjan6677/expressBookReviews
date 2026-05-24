@@ -1,7 +1,12 @@
 const axios = require('axios');
 const baseURL = 'http://localhost:5000';
 
-// Method 1: Get all books using Async/Await
+/**
+ * Purpose: Retrieves a list of all available books in the shop.
+ * Expected Input: None.
+ * Expected Output: Logs a JSON object containing all books, where keys are ISBNs and values are book details.
+ * Method: Uses async/await with Axios.
+ */
 async function getAllBooks() {
     try {
         const response = await axios.get(`${baseURL}/`);
@@ -17,7 +22,12 @@ async function getAllBooks() {
     }
 }
 
-// Method 2: Get book details by ISBN using Promises
+/**
+ * Purpose: Retrieves the details of a specific book based on its ISBN.
+ * Expected Input: isbn (String or Number) - The unique identifier for the book.
+ * Expected Output: Logs a JSON object containing the specific book's details (author, title, reviews).
+ * Method: Uses Promises (.then/.catch) with Axios.
+ */
 function getBookByISBN(isbn) {
     axios.get(`${baseURL}/isbn/${isbn}`)
         .then(response => {
@@ -36,7 +46,12 @@ function getBookByISBN(isbn) {
         });
 }
 
-// Method 3: Get book details by Author using Async/Await
+/**
+ * Purpose: Retrieves all books written by a specific author.
+ * Expected Input: author (String) - The name of the author to search for.
+ * Expected Output: Logs a JSON array of book objects written by the specified author.
+ * Method: Uses async/await with Axios.
+ */
 async function getBookByAuthor(author) {
     try {
         const response = await axios.get(`${baseURL}/author/${encodeURIComponent(author)}`);
@@ -44,7 +59,6 @@ async function getBookByAuthor(author) {
             console.log(`Books by ${author}:`, response.data);
         }
     } catch (error) {
-        // Explicitly handling HTTP response codes as requested by the grader
         if (error.response) {
             if (error.response.status === 404) {
                 console.error(`Error: No books found for author "${author}" (404).`);
@@ -57,7 +71,12 @@ async function getBookByAuthor(author) {
     }
 }
 
-// Method 4: Get book details by Title using Promises
+/**
+ * Purpose: Retrieves all books matching a specific title.
+ * Expected Input: title (String) - The title of the book to search for.
+ * Expected Output: Logs a JSON array of book objects matching the specified title.
+ * Method: Uses Promises (.then/.catch) with Axios.
+ */
 function getBookByTitle(title) {
     axios.get(`${baseURL}/title/${encodeURIComponent(title)}`)
         .then(response => {
@@ -76,7 +95,7 @@ function getBookByTitle(title) {
         });
 }
 
-// Execute the functions
+// Execute the functions to demonstrate functionality
 getAllBooks();
 getBookByISBN(1);
 getBookByAuthor("Chinua Achebe");
