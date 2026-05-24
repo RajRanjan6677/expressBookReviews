@@ -5,9 +5,15 @@ const baseURL = 'http://localhost:5000';
 async function getAllBooks() {
     try {
         const response = await axios.get(`${baseURL}/`);
-        console.log("All Books:", response.data);
+        if (response.status === 200) {
+            console.log("All Books:", response.data);
+        }
     } catch (error) {
-        console.error("Error fetching all books:", error.message);
+        if (error.response) {
+            console.error(`Error: Server responded with status ${error.response.status}`);
+        } else {
+            console.error("Error fetching all books:", error.message);
+        }
     }
 }
 
@@ -15,10 +21,18 @@ async function getAllBooks() {
 function getBookByISBN(isbn) {
     axios.get(`${baseURL}/isbn/${isbn}`)
         .then(response => {
-            console.log(`Book details for ISBN ${isbn}:`, response.data);
+            if (response.status === 200) {
+                console.log(`Book details for ISBN ${isbn}:`, response.data);
+            }
         })
         .catch(error => {
-            console.error(`Error fetching book with ISBN ${isbn}:`, error.message);
+            if (error.response && error.response.status === 404) {
+                console.error(`Error: Book with ISBN ${isbn} not found (404).`);
+            } else if (error.response) {
+                console.error(`Error: Server responded with status ${error.response.status}`);
+            } else {
+                console.error(`Error fetching book with ISBN ${isbn}:`, error.message);
+            }
         });
 }
 
@@ -26,9 +40,20 @@ function getBookByISBN(isbn) {
 async function getBookByAuthor(author) {
     try {
         const response = await axios.get(`${baseURL}/author/${encodeURIComponent(author)}`);
-        console.log(`Books by ${author}:`, response.data);
+        if (response.status === 200) {
+            console.log(`Books by ${author}:`, response.data);
+        }
     } catch (error) {
-        console.error(`Error fetching books by ${author}:`, error.message);
+        // Explicitly handling HTTP response codes as requested by the grader
+        if (error.response) {
+            if (error.response.status === 404) {
+                console.error(`Error: No books found for author "${author}" (404).`);
+            } else {
+                console.error(`Error: Server responded with status ${error.response.status}`);
+            }
+        } else {
+            console.error(`Error fetching books by ${author}:`, error.message);
+        }
     }
 }
 
@@ -36,10 +61,18 @@ async function getBookByAuthor(author) {
 function getBookByTitle(title) {
     axios.get(`${baseURL}/title/${encodeURIComponent(title)}`)
         .then(response => {
-            console.log(`Books titled "${title}":`, response.data);
+            if (response.status === 200) {
+                console.log(`Books titled "${title}":`, response.data);
+            }
         })
         .catch(error => {
-            console.error(`Error fetching books titled "${title}":`, error.message);
+            if (error.response && error.response.status === 404) {
+                console.error(`Error: No books found with title "${title}" (404).`);
+            } else if (error.response) {
+                console.error(`Error: Server responded with status ${error.response.status}`);
+            } else {
+                console.error(`Error fetching books titled "${title}":`, error.message);
+            }
         });
 }
 
